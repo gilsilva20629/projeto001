@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+
+<html>	
+	<head>
+		<title>Login</title>
+
+		<!-- javascript
+		<script type="module" src="./test.js">
+			// import function from ./aquivo.js
+
+		</script>
+		-->
+
+		<script>
+			//JavaScript
+			function OnClick(){
+				document.getElementById("demo").innerHTML = "onclick";
+			}
+
+			function validateForm(event){
+				event.preventDefault();	// // Impede o envio imediato do formulário.
+			/*
+				console.log(window.location.hash);
+				console.log(window.location.host);
+				console.log(window.location.hostname);
+				console.log(window.location.href);
+				console.log(window.location.origin);
+				console.log(window.location.pathname);
+				console.log(window.location.port);
+				console.log(window.location.protocol);
+			*/
+				//Captura os campos
+				const name_user = document.getElementById("name_user").value;
+				const password = document.getElementById("password").value;
+				console.log("Validate:", name_user, password);
+				console.log("Typeof:", typeof name_user, typeof password);
+				//console.log(name_user.value[0], password.value[3]);
+				//console.log(name_user.value.slice(0,3), password.value.slice(-4,-1));
+				//console.log("In Validate...");
+
+				//document.getElementById("form1").submit();	//manda requisicao sem capturar retorno
+
+				let url = "https://aprendendoapigithub-production.up.railway.app/login";
+				if (window.location.hostname == "localhost" || window.location.hostname == "127.0.0.1"){
+					url = "http://127.0.0.1:5000/login";
+				}
+
+				fetch(url, {
+					method: 'POST',
+                	headers: {
+                		'Content-Type': 'application/json',
+                		'Access-Control-Allow-Origin':'no-cors'
+                	},
+                	body: JSON.stringify({
+                		name_user: name_user,
+                    	password: password,
+                    	extra: document.getElementById("op_type").value
+                    })
+				})
+				.then(response => {
+					if (!response.ok){
+						throw new Error('Netwok: A resposta da rede não foi boa.');
+					}
+					return response.text();  // ou response.json() se a resposta for JSON
+				})
+				.then(data => {
+					//manipula o retorno
+					console.log('Success:', data);
+					console.log("Retorno tipo:", typeof data);
+					window.alert(data);
+
+					if(data == "OK"){
+						window.location.href = "shop.html";
+						//window.location.assign("shop.html");
+						//window.location.replace("shop.html","_blank");
+					}
+
+				})
+				.catch( (error) => {
+					console.error('Error:', error);
+				});
+				
+			}
+
+		</script>
+	</head>
+
+	<body>
+		<h1> Cadastro Login & authentication Page</h1>
+		<!-- ###############  FORMULARIO  ############### -->
+		<form id="form1" action="https://aprendendoapigithub-production.up.railway.app/login" method="post" target="_blank" onsubmit="validateForm(event)">
+			<label>Name User</label><br>
+			<input id="name_user" type="text" name="name_user" value="" required> </br>
+			<label>Password<label><br>
+			<input id="password" type="text" name="password" value="" required> <br>
+			<input type="hidden" id="op_type" name="op_type" value="1">
+			<br>
+			<button type="button" name="cadastro" id="cadastro" onclick="window.location.href='cadastro.html'">Cadastro</button>
+			<input type="submit" value="Login">		
+		</form>
+
+	<!--
+		<p class="Test" id="name">knqovfsybinfithd</p>
+		<p class="Test" id="pass">&i1&&dz6y%$7ycl4</p>
+		<p class="Test" id="alpha">abc</p>
+		<p class="Test" id="demo">xyz</p>
+		<p class="Test" id="Teste" name="number">123</p>
+
+		
+		<script>
+		//JavaScript
+
+			function myFunction(){
+				document.getElementById("demo").innerHTML = "Hello javascript!";
+
+			}
+
+			elements = document.getElementsByTagName("p");
+
+			for(i = 0; i < elements.length; i++){
+				console.log(elements[i].innerHTML);
+			}
+
+			document.getElementsByTagName("p")[2].style.color = "blue";
+			//document.getElementById('demo').innerHTML = "Hello javascript!";
+			document.getElementById("Teste").style.color = "red";
+			// document.getElementById("demo").style.display = "block"; 	bloqueia elemento
+			// document.getElementById("demo").style.display = "none"; 		oculta elemento
+
+			//innerHTML ou innerText -> ecreve no conteudo do elemento
+			//document.write("document.write: Hello World!") 		//-> ecreve no Html
+			//window.alert("window.alert: Hello World!")			//-> ecreve no popup do navegador
+			//console.log("console.log: Hello Wolrd!")			//-> ecreve na ferramentas de desenvolvedor
+			//window.print()									//-> imprime documento
+			
+		</script>
+		<br>
+		<br>
+		<button type="button" onclick="OnClick()"> Try it: Onclick() </button>
+		<button type="button" onclick="myFunction()" > Try it: myFunction() </button>
+
+		
+	-->	
+		<!-- texto exibido quando o javascript não puder ser carregado -->
+		<noscript> Sorry, your browser does not support JavaScript! </noscript>
+		<br>
+		<br>
+		<a href="./testes/authentication/Oauth.html" target="_blank">Oauth</a>
+		<br>
+		<a href="./shopping.html" target="_self">shopping</a>
+
+	</body>
+</html>

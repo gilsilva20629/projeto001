@@ -1,29 +1,35 @@
 import subprocess
+import time
+from ..testes import teste # funcionou com o comando$ python3 -m projeto001.source.main
 
-run_server = ["python3", "server.py"]
-#ls = ["ls", "-la"]
-
-
-result = subprocess.run(run_server, capture_output=True, text=True)
-#result = subprocess.run(ls, capture_output=True, text=True, encoding="utf-8", timeout=10)
-#result = subprocess.run(run_server, capture_output=True, text=True, encoding="utf-8", timeout=10, check=True)
-
-print(result.returncode, "\n", result.stdout)
+print(__package__)
+print(__name__)
 
 
+args_flask = ["python3", "-m", "projeto001.source.servers.flask_server"]
+#args_flask_shell = ["python3 -m projeto001.source.servers.flask_server"]
+args_http = ["python3", "-m", "http.server", "--directory", "./frontend/static"]
 
-'''
-try:
-	result = subprocess(run_server, capture_output=True, text=True, encoding="utf-8", timeout=10, check=True)
-	#print(result.check_returncode)
-	print(result.stdout)
-	
-except Exception as err:
-	print(err, type(err))
-	print("stderr", result.stderr)
-#except subprocess.SubprocessError as sb_err :
-#except subprocess.CalledProcessError as cp_err :
-#except subprocess.TimeoutExpired as te_err :
-finally:
-	print("pronto")
-'''
+
+
+#cwd=None, parametro de popen, muda o diretorio de trablho antes de executar o processo filho
+flask_server = subprocess.Popen(args_flask, start_new_session=True )
+time.sleep(10)
+print("Pid flask: ", flask_server.pid)
+
+
+
+#http_server = subprocess.Popen(args_http)
+#print("Pid http: ", http_server.pid)
+
+
+#flask_server.poll())	
+#flask_server.terminate()
+#flask_server.wait(Timeout) -> returncode or TimeoutExpired
+#flask_server.kill()
+#flask_server.communicate(AnyString, Timeout) -> Tuple(AnyString, AnyString)
+#flask_server.send_signal(sig: int) -> None
+#flask_server.returncode
+#flask_server.stdin
+#flask_server.stdout
+#flask_server.stderr
