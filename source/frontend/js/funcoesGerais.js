@@ -172,15 +172,18 @@ function validateForm(event){
 
 export function createDiv(){
 	const div = window.document.createElement("div");
-    div.style = "width:20%; height:300; border:1px solid black; margin:5px; padding:5px; display:inline-block;";
+    div.style = "width:23.5%; height:300; border:1px solid black; margin:5px; padding:5px; display:inline-block;";
     div.className = "slot_prod";
 
 	const img = window.document.createElement("img");
-	img.width = "100%";
-	img.height = "200px";
-	
-	div.img = img; // passo adicional nescessario porque img não tem src ou atributo relevante definido fazendo img retornar undefined
+	img.src = "./generic.jpg";
+	img.style.width = "100%";
+	img.style.height = "200px";
+	img.id = "img";
+	console.log(img);
+	//div.img = img; // passo adicional nescessario porque img não tem src ou atributo relevante definido fazendo img retornar undefined
 	div.appendChild(img);
+	console.log(div);
 
 	const p = window.document.createElement("p");
 

@@ -15,7 +15,6 @@
     <script type="module">
         import { createDiv, carregarProdutos } from "./js/funcoesGerais.js";
 
-
         const main = window.document.createElement("main");
         main.id = "container";
         main.style = "border: 1px solid black; margin: 22px; padding: 10px;";
@@ -24,17 +23,14 @@
         const products = await carregarProdutos();
         //console.log(products);
         //console.log(products.length);
+
         let id = 0;
         while(id < products.length-1){
+
             const div = createDiv();
             div.id = id;
-            
-            console.log(div);
-            console.log(div.img);
-            
-	        div.img.src = products[id]["images"][0];
-            
-
+                   
+            div.querySelector(`img[id="img"]`).src = products[id]["images"][0];
             div.querySelector(`small[id="title"]`).innerHTML = products[id]['title'];
             div.querySelector(`small[id="category"]`).innerHTML = "Category: " + products[id]['category'];
             div.querySelector(`small[id="price"]`).innerHTML = "R$ " + products[id]['price'];
@@ -42,13 +38,14 @@
             div.querySelector(`small[id="barcode"]`).innerHTML = products[id]['meta']['barcode'];
             div.querySelector(`small[id="qrcode"]`).innerHTML = products[id]['meta']['qrCode'];
             div.querySelector(`small[id="rating"]`).innerHTML = "Rating: " + products[id]['rating'];
-        
+            
+            //div.appendChild(img);
             main.appendChild(div);
             //console.log("Id:", id);
+            //console.log(div.img);
+            console.log(div);
             id++;
-        } 
+        }
 
     </script>
 </html>
-
-		
