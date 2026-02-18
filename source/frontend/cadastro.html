@@ -4,15 +4,12 @@
 	<head>
 			
 		<script type="module"> // import com escopo local necessário 'keyword export' na origem.
-			import validateForm, {feedbackClear} from "./js/funcoesGerais.js";
+			import {validateForm, feedbackClear} from "./js/funcoesGerais.js";
 			
 			// "window" tornando a função de local para global escopo.
 			window.validateForm = validateForm; 
 			window.feedbackClear = feedbackClear;
 
-		</script>
-
-		<script>
 			let selected_option = "user";
 			const elements_Cad_Client = window.document.getElementsByClassName("Cad-Client");
 			const elements_Cad_Product = window.document.getElementsByClassName("Cad-Product");

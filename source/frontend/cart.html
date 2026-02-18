@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+		<title>Cart</title>
+        <link rel="stylesheet" href="./css/style.css">
+    </head>
+    <body>
+        <a href="shopping.html" target="_self">Shopping</a>
+        <button type="button" name="previous" id="previous">Previous</button>
+        <label>1</label>
+        <button type="button" name="next" id="next" onclick="removeFromBody(window.document.getElementsByTagName('main')[0])">Next</button>
+        <button type="button" name="order" id="close">Close order</button>
+        <br>
+        <br>
+        
+        <script type="module">
+            import {
+                createMain, createStdDiv, createHorDiv, createVerDiv, createBlockDiv, 
+                appendToBody, removeFromBody, appendMain, mainFill
+            } from "./js/templates.js";
+
+            window.removeFromBody = removeFromBody; // Torna a função acessível globalmente.
+
+            const pages = [];
+            const currentPage = 0;
+            appendToBody(createMain());
+            mainFill();
+            pages.push(window.document.getElementsByTagName("main"));
+            //pages.pop(); remove ultimo
+            //pages.shift(); remove primeiro
+        </script>
+        
+    </body>
+</html>

@@ -4,8 +4,8 @@ import uuid
 
 
 symbol = "abcdefghijklmnopqrstuvxywz0123456789_!@#$%&" # [0:25] [26:35] [36:42]
-tipos = ["normal", "manager", "admin"]
-pesos = [0.9,0.09,0.01]
+tipos = ["normal", "manager", "admin", "client"]
+pesos = [0.4,0.09,0.01,0.5]
 
 
 def genarate_info_user_test():

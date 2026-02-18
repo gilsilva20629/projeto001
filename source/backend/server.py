@@ -17,15 +17,15 @@ que permitem que os servidores descrevam um conjunto de origens que possuem perm
 #<servidor WEB>#########################################
 @app.route('/', methods=['GET'])
 def home_page():
-    return send_from_directory('../frontend/static', 'index.html')
+    return send_from_directory('../frontend', 'index.html')
 
 @app.route('/cadastro.html', methods=['GET'])
 def cadastro_page():
-    return send_from_directory('../frontend/static', 'cadastro.html')
+    return send_from_directory('../frontend', 'cadastro.html')
 
-@app.route('/shop.html', methods=['GET'])
+@app.route('/shopping.html', methods=['GET'])
 def shop_page():
-    return send_from_directory('../frontend/static', 'shop.html')
+    return send_from_directory('../frontend', 'shopping.html')
 
 #</servidor WEB>#########################################
 

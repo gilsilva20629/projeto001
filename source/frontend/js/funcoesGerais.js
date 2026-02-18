@@ -14,7 +14,7 @@ export function feedbackClear(){
 // javascript import falha caregado pelo protocolo file:// devido a CORS policy
 
 
-function validateForm(event){
+export function validateForm(event){
 	event.preventDefault();	// Impede o envio imediato do formulário.
 	feedbackClear();
 	let form = event.target; // 'target' elemento que disparou o evento
@@ -176,14 +176,14 @@ export function createDiv(){
     div.className = "slot_prod";
 
 	const img = window.document.createElement("img");
-	img.src = "./generic.jpg";
+	img.src = "./img/generic.jpg";
 	img.style.width = "100%";
 	img.style.height = "200px";
 	img.id = "img";
-	console.log(img);
+	//console.log(img);
 	//div.img = img; // passo adicional nescessario porque img não tem src ou atributo relevante definido fazendo img retornar undefined
 	div.appendChild(img);
-	console.log(div);
+	//console.log(div);
 
 	const p = window.document.createElement("p");
 
@@ -219,9 +219,32 @@ export function createDiv(){
 
 	div.appendChild(p);
 
+	const button = window.document.createElement("button");
+	button.innerText = "add shopping cart";
+	button.name = "add";
+	button.id = "add";
+	button.type = "button";
+	button.onclick = function(event){
+		window.addCart(event);
+	};
+	//button.addEventListener('click', function(event) {
+	//window.addcart(event);
+	//});
+
+	div.appendChild(button);
+
     return div;
 }
 
+export function addCart(event){
+	const button = event.target;
+	console.log(button);
+	const div = button.parentElement;
+	console.log(div);
+	
+	// guardar a div em local acessivel para cart.html
+
+}
 
 export async function carregarProdutos(){
 	let url = "https://aprendendoapigithub-production.up.railway.app/products";
@@ -259,5 +282,5 @@ export async function carregarProdutos(){
 
 // declaracao "export" habilita para import via <script type="module>.
 //você não pode usar a palavra-chave default mais de uma vez em um único módulo.
-export default validateForm;
+//export default validateForm;
 
