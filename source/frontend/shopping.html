@@ -14,8 +14,6 @@
 
 
     <script type="module">
-        const pages = [];
-        
         import { createDiv, carregarProdutos, addCart } from "./js/funcoesGerais.js";
 
         window.addCart = addCart;
@@ -30,7 +28,8 @@
         //console.log(products.length);
 
         let id = 0;
-        while(id < products.length-1){
+        let count = 0;
+        while(id < products.length-1 || id < 20){
 
             const div = createDiv();
             div.id = id;
@@ -49,6 +48,7 @@
             //console.log("Id:", id);
             //console.log(div.img);
             //console.log(div);
+            count++;
             id++;
         }
 

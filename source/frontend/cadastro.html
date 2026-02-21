@@ -89,14 +89,15 @@
   				text-align: center;
   				*/
 			}
+		/*
 			form {
 
 			}
 
-			.p{	/* quando tem o ponto no começo é style para uma classe. */
+			.p{	quando tem o ponto no começo é style para uma classe. 
 
 			}
-
+		*/
 		</style>
 
 		<meta charset="utf-8">
@@ -174,7 +175,7 @@
 			hidden		Indica que o elemento deve ser oculto.
 		-->
 
-		<p style="color: blue; background-color: yellow;">Cadastro de Usuários</p>
+		<p style="color: blue; background-color: rgb(255, 255, 0);">Cadastro de Usuários</p>
 		<div id="div-user">
 			<!-- tag_form_atributos:
 				Atributo		Descrição
@@ -189,7 +190,8 @@
 				accept-charset	Especifica quais conjuntos de caracteres são aceitos ao enviar o formulário.
 				onsubmit		chama função ao submeter formulario.
 			-->	
-			<form action="http://127.0.0.1:5000/cadastro" method="POST" target="_blank" name="form-user" id="form-user" onsubmit="window.validateForm(event)">
+			<form action="http://127.0.0.1:5000/cadastro" method="POST" target="_blank" name="form-user" id="form-user" 
+			onsubmit="window.validateForm(event)">
 				<label>User</label> <br>
 				<input class="Cad-User" type="text" name="user" id="user" value="" required> <br>
 				<label>Password</label> <br>
@@ -219,7 +221,8 @@
 				accept-charset	Especifica quais conjuntos de caracteres são aceitos ao enviar o formulário.
 				onsubmit		chama função ao submeter formulario.
 			-->	
-			<form action="http://127.0.0.1:5000/cadastro" method="POST" target="_blank" name="form-client" id="form-client" onsubmit="window.validateForm(event)">
+			<form action="http://127.0.0.1:5000/cadastro" method="POST" target="_blank" name="form-client" id="form-client" 
+			onsubmit="window.validateForm(event)">
 				<label>Nome</label> <br>
 				<input class="Cad-Client" type="text" name="client" id="client" value="" required disabled> <br>
 				<label>Endereço</label> <br>
@@ -236,7 +239,8 @@
 
 		<p style="color: blue; background-color: yellow;">Cadastro de Produtos</p>
 		<div>
-			<form action="http://127.0.0.1:5000/cadastro" method="POST" target="_blank" name="form-product" id="form-product" onsubmit="window.validateForm(event)">
+			<form action="http://127.0.0.1:5000/cadastro" method="POST" target="_blank" name="form-product" id="form-product" 
+			onsubmit="window.validateForm(event)">
 
 				<!-- input types:
 					<input type="button">
