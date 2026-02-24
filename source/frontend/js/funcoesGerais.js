@@ -242,8 +242,9 @@ export function addCart(event){
 	const div = button.parentElement;
 	console.log(div);
 	
-	// guardar a div em local acessivel para cart.html
-
+	sessionStorage.setItem(`Item${div.id}`, JSON.stringify( [div.querySelector("small[id=title]").innerHTML,
+		div.querySelector("small[id=price]").innerHTML] ));
+	
 }
 
 export async function carregarProdutos(){

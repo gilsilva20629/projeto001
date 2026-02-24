@@ -34,7 +34,7 @@ def start():
 				host = "localhost",
 				user = "root",
 				password = "Nsg@2024",
-				database ="db_teste01"
+				database ="ecommerce"
 			)
 			print("Connected in DB localhost...")
 
