@@ -2,7 +2,7 @@ import mysql.connector
 import os                #usada para ppegar as variaveis de ambiente.
 import hashlib
 from .entities import User, Client, Product
-
+import json
 
 def start():
 
@@ -64,12 +64,11 @@ def start():
 	#mydb.commit()
 	'''
 
-
-def quit():
+def quit(mydb, mycursor):
 	mycursor.close()
 	mydb.close()
 
-def exit():
+def exit(mydb, mycursor):
 	mycursor.close()
 	mydb.close()
 
@@ -111,7 +110,7 @@ def add_user_test(user, command_x=None):
 '''
 
 def login(name:  str, password: str, command_x=None)-> bool:
-	start()
+	mydb, mycursor = start()
 	#command_extra(command_x)
 
 	results = search_user(name)[0]
@@ -128,8 +127,7 @@ def login(name:  str, password: str, command_x=None)-> bool:
 				return True
 			else:
 				return False
-	exit()
-
+	exit(mydb, mycursor)
 
 def cadUser(name: str, password: str, tipo: str, address: str, contact: str, command_x=None)-> bool:
 	mydb, mycursor = start()
@@ -137,8 +135,8 @@ def cadUser(name: str, password: str, tipo: str, address: str, contact: str, com
 		#command_extra(command_x)
 
 		usuario = User(name, password, tipo, address, contact)
-		sql = "INSERT INTO user(id, name, password, tipo, address, contact) VALUES(%s, %s, %s, %s, %s, %s)"
-		values = (usuario.id, usuario.name, usuario.password, usuario.tipo, usuario.address, usuario.contact)
+		sql = "INSERT INTO user(name, password, tipo, address, contact) VALUES(%s, %s, %s, %s, %s)"
+		values = (usuario.name, usuario.password, usuario.tipo, usuario.address, usuario.contact)
 
 		mycursor.execute(sql, values)
 		mydb.commit()
@@ -157,7 +155,7 @@ def cadUser(name: str, password: str, tipo: str, address: str, contact: str, com
 	except Exception as error:
 		print("query falhou!", error, type(error))
 		return False
-	exit()
+	exit(mydb, mycursor)
 
 def cadClient(name, address, contact):
 	mydb, mycursor = start()
@@ -197,33 +195,76 @@ def cadClient(name, address, contact):
 	except Exception as error:
 		print("query falhou!", error, type(error))
 		return False
-	exit()
+	exit(mydb, mycursor)
+
+def cadProductBatch():
+	mydb, mycursor = start()
+
+	data = ""
+	with open(file="./cache/products.txt", mode="r", encoding="utf-8") as file: 
+	# com 'with' abre e fecha o arquivo automaticamente(forma segura).
+		data = json.loads(file.read())
+
+	name = ""
+	category = ""
+	unit = "und"
+	stock = ""
+	price = ""
+	itemsList = data['products']
+	for i in itemsList:
+		name = i['title']
+		category = i['category']
+		stock = i['stock']
+		price = i['price']
+	
+		try:
+			produto = Product(name, category, unit)
+			sql = "INSERT INTO product(name, category, unit, stock, price) VALUES(%s, %s, %s, %s, %s)"
+			values = (produto.name, produto.category, produto.unit, stock, price)
+			mycursor.execute(sql, values)
+			mydb.commit()
+			print("Reg. n°: ", mycursor.lastrowid, mycursor.rowcount,  "Record Inserted.")
+			#print("fetch: ", mycursor.fetchall(), len(mycursor.fetchall()), type(mycursor.fetchall()))
+			# fetchone(), fectchmany(size), fetchall()
+			
+			#Método			Descrição
+			#fetchone()		Retorna a próxima linha do resultado da consulta como uma tupla começando da primeira. Se não houver mais linhas, retorna None.
+			#fetchmany(size)	Retorna o número especificado de linhas (definido por size) do resultado da consulta como uma lista de tuplas. Se não houver mais linhas, retorna o que estiver disponível.
+			#fetchall()		Retorna todas as linhas do resultado da consulta como uma lista de tuplas. Este é o método que você mencionou.
+			
+			#return True
+
+		except Exception as error:
+			print("Falha ao cadastrar produto!", error, type(error))
+			#return False
+
+	exit(mydb, mycursor)
 
 def cadProduct(product_name: str, category: str, unit: str)-> bool:
 	mydb, mycursor = start()
 	try:
 		
 		produto = Product(product_name, category, unit)
-		sql = "INSERT INTO product(id, name, category, unit) VALUES(%s, %s, %s, %s)"
-		values = (produto.id, produto.name, produto.category, produto.unit)
+		sql = "INSERT INTO product(name, category, unit, stock, price) VALUES(%s, %s, %s, %s, %s)"
+		values = (produto.name, produto.category, produto.unit, product.stock, product.price)
 		mycursor.execute(sql, values)
 		mydb.commit()
-		print("Reg. n°: ", mycursor.lastrowid, mycursor.rowcount,  "Record Inserted,", "fetch: ", mycursor.fetchall(), len(mycursor.fetchall()), type(mycursor.fetchall()))
+		print("Reg. n°: ", mycursor.lastrowid, mycursor.rowcount,  "Record Inserted.")
 		#print("fetch: ", mycursor.fetchall(), len(mycursor.fetchall()), type(mycursor.fetchall()))
 		# fetchone(), fectchmany(size), fetchall()
-		''' 
-		Método			Descrição
-		fetchone()		Retorna a próxima linha do resultado da consulta como uma tupla começando da primeira. Se não houver mais linhas, retorna None.
-		fetchmany(size)	Retorna o número especificado de linhas (definido por size) do resultado da consulta como uma lista de tuplas. Se não houver mais linhas, retorna o que estiver disponível.
-		fetchall()		Retorna todas as linhas do resultado da consulta como uma lista de tuplas. Este é o método que você mencionou.
-		'''
+
+		#Método			Descrição
+		#fetchone()		Retorna a próxima linha do resultado da consulta como uma tupla começando da primeira. Se não houver mais linhas, retorna None.
+		#fetchmany(size)	Retorna o número especificado de linhas (definido por size) do resultado da consulta como uma lista de tuplas. Se não houver mais linhas, retorna o que estiver disponível.
+		#fetchall()		Retorna todas as linhas do resultado da consulta como uma lista de tuplas. Este é o método que você mencionou.
+		
 		
 		return True
 	except Exception as error:
-		print("query falhou!", error, type(error))
+		print("Falha ao cadastrar produto!", error, type(error))
 		return False
 
-	exit()
+	exit(mydb, mycursor)
 
 def search_user(name=None, user_id=None, tipo=None, command_x=None):
 	mydb, mycursor = start()
@@ -275,7 +316,7 @@ def search_user(name=None, user_id=None, tipo=None, command_x=None):
 		
 	
 	return n, u, g
-	exit()
+	exit(mydb, mycursor)
 		
 def list_users(command_x=None):
 	mydb, mycursor = start()
@@ -284,7 +325,7 @@ def list_users(command_x=None):
 	results = mycursor.fetchall()
 	
 	return results
-	exit()
+	exit(mydb, mycursor)
 
 def remove(u_id, command_x=None):
 	mydb, mycursor = start()
@@ -292,6 +333,4 @@ def remove(u_id, command_x=None):
 	mycursor.execute(f"DELETE FROM user WHERE user_id={u_id}")
 	mydb.commit()
 	print(mycursor.rowcount, "Record(s) Deleted.")
-	exit()
-
-
+	exit(mydb, mycursor)

@@ -43,7 +43,7 @@ class User():
 
 	def __init__(self, name:str, password:str, tipo:str, address: str, contact: str):
 		#self.id = random.randint(1,10000)
-		self.id = str(uuid.uuid4())
+		#self.id = str(uuid.uuid4())
 		self.name = name
 		self.password = password
 		self.tipo = tipo
@@ -75,7 +75,9 @@ class Client():
 class Product():
 
 	def __init__(self, name: str, category: str, unit: str):
-		self.id = str(uuid.uuid4())
+		#self.id = str(uuid.uuid4())
 		self.name = name
 		self.category = category
 		self.unit = unit
+		self.stock = 0
+		self.price = 0.01

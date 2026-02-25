@@ -163,9 +163,9 @@ export function StdDivFill(products){
         div.querySelector(`small[id="category"]`).innerHTML = "Category: " + products[id]['category'];
         div.querySelector(`small[id="price"]`).innerHTML = "R$ " + products[id]['price'];
         div.querySelector(`small[id="stock"]`).textContent = "Disponível: " + products[id]['stock'];
-        div.querySelector(`small[id="barcode"]`).innerHTML = products[id]['meta']['barcode'];
-        div.querySelector(`small[id="qrcode"]`).innerHTML = products[id]['meta']['qrCode'];
-        div.querySelector(`small[id="rating"]`).innerHTML = "Rating: " + products[id]['rating'];
+        //div.querySelector(`small[id="barcode"]`).innerHTML = products[id]['meta']['barcode'];
+        //div.querySelector(`small[id="qrcode"]`).innerHTML = products[id]['meta']['qrCode'];
+        //div.querySelector(`small[id="rating"]`).innerHTML = "Rating: " + products[id]['rating'];
         
         divs.push(div);
         count++;
