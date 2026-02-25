@@ -41,12 +41,14 @@ print(tipo)
 
 class User():
 
-	def __init__(self, name:str, password:str, tipo:str):
+	def __init__(self, name:str, password:str, tipo:str, address: str, contact: str):
 		#self.id = random.randint(1,10000)
 		self.id = str(uuid.uuid4())
 		self.name = name
 		self.password = password
 		self.tipo = tipo
+		self.address = address
+		self.contact = contact
 		#self.tipo_teste = random.choices(tipos, weights=pesos, k=1)[0]
 
 class Client():

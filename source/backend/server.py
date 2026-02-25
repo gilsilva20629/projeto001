@@ -129,7 +129,9 @@ def cadastros():
 		arg2 = request.form["arg2"]
 		arg3 = request.form["arg3"]
 		arg4 = request.form["arg4"]
-		op_type = arg4
+		arg5 = request.form["arg5"]
+		arg6 = request.form["arg6"]
+		op_type = arg6
 		resposta = "OK"
 
 	elif request.headers["Content-Type"] == "text/html;charset=utf-8" :
@@ -137,7 +139,9 @@ def cadastros():
 		arg2 = request.form.get("arg2")
 		arg3 = request.form.get("arg3")
 		arg4 = request.form.get("arg4")
-		op_type = arg4
+		arg5 = request.form.get("arg5")
+		arg6 = request.form.get("arg6")
+		op_type = arg6
 		resposta = "OK"
 
 	elif request.headers["Content-Type"] == "application/json" :
@@ -145,7 +149,9 @@ def cadastros():
 		arg2 = request.json.get("arg2")
 		arg3 = request.json.get("arg3")
 		arg4 = request.json.get("arg4")
-		op_type = arg4
+		arg5 = request.json.get("arg5")
+		arg6 = request.json.get("arg6")
+		op_type = arg6
 		resposta = "OK"
 
 	elif request.headers["Content-Type"] == "text/plain;charset=UTF-8" :
@@ -191,8 +197,10 @@ def cadastros():
 				name = arg1
 				password = arg2
 				tipo = arg3
+				address = arg4
+				contact = arg5
 
-				r = CDB.cadUser(name, password, tipo)
+				r = CDB.cadUser(name, password, tipo, address, contact)
 				if r :
 					resposta = "OK"
 				else:

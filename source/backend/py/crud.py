@@ -109,6 +109,7 @@ def add_user_test(user, command_x=None):
 	print(mycursor.rowcount, "Record Inserted.")
 	exit()
 '''
+
 def login(name:  str, password: str, command_x=None)-> bool:
 	start()
 	#command_extra(command_x)
@@ -130,14 +131,14 @@ def login(name:  str, password: str, command_x=None)-> bool:
 	exit()
 
 
-def cadUser(name: str, password: str, tipo: str, command_x=None)-> bool:
+def cadUser(name: str, password: str, tipo: str, address: str, contact: str, command_x=None)-> bool:
 	mydb, mycursor = start()
 	try:
 		#command_extra(command_x)
 
-		usuario = User(name, password, tipo)
-		sql = "INSERT INTO user(id, name, password, tipo) VALUES(%s, %s, %s, %s)"
-		values = (usuario.id, usuario.name, usuario.password, usuario.tipo)
+		usuario = User(name, password, tipo, address, contact)
+		sql = "INSERT INTO user(id, name, password, tipo, address, contact) VALUES(%s, %s, %s, %s, %s, %s)"
+		values = (usuario.id, usuario.name, usuario.password, usuario.tipo, usuario.address, usuario.contact)
 
 		mycursor.execute(sql, values)
 		mydb.commit()

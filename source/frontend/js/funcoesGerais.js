@@ -1,4 +1,5 @@
 export function feedbackClear(){
+	//limpa msg de feedback vinda do server.py
 	let feedback_user = window.document.getElementById("frm-user");
 	let feedback_client = window.document.getElementById("frm-client");
 	let feedback_product = window.document.getElementById("frm-product");
@@ -25,8 +26,8 @@ export function validateForm(event){
 	if (window.location.hostname === "localhost" || window.location.hostname === "127.0.0.1"){
 		url = "http://127.0.0.1:5000/cadastro";
 	}	
-	console.log("hostname: ", window.location.hostname);
-	console.log("url: ", url);
+	//console.log("hostname: ", window.location.hostname);
+	//console.log("url: ", url);
 
 	let feedback_user = window.document.getElementById("frm-user");
 	let feedback_client = window.document.getElementById("frm-client");
@@ -35,6 +36,8 @@ export function validateForm(event){
 	if (form.name == "form-user") {
 		const user = window.document.getElementById("user").value;
 		const password = window.document.getElementById("password").value;
+		const address = window.document.getElementById("address").value;
+		const contact = window.document.getElementById("contact").value;
 		const tipo = window.document.getElementById("type").value;
 		const op_type = window.document.getElementById("op_type_user").value;
 
@@ -49,7 +52,9 @@ export function validateForm(event){
 				"arg1": user,
 				"arg2": password,
 				"arg3": tipo,
-				"arg4": op_type
+				"arg4": address,
+				"arg5": contact,
+				"arg6": op_type
 			})
 		})
 		.then(response => {

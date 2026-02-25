@@ -2,70 +2,11 @@
 
 <html>
 	<head>
-			
-		<script type="module"> // import com escopo local necessário 'keyword export' na origem.
-			import {validateForm, feedbackClear} from "./js/funcoesGerais.js";
-			
-			// "window" tornando a função de local para global escopo.
-			window.validateForm = validateForm; 
-			window.feedbackClear = feedbackClear;
-
-			let selected_option = "user";
-			const elements_Cad_Client = window.document.getElementsByClassName("Cad-Client");
-			const elements_Cad_Product = window.document.getElementsByClassName("Cad-Product");
-			const elements_Cad_User = window.document.getElementsByClassName("Cad-User");
-
-			function setOption(value){
-				window.feedbackClear();
-				selected_option = this.value; // 'this' refere-se ao elemento no caso o 'select' que disparou o evento
-				//console.log(selected_option);
-				disableElement();
-			}
-
-			function disableElement(){
-				if(selected_option == "user"){
-
-					for(key in elements_Cad_Client){
-						elements_Cad_Client[key].disabled = true;
-					}
-					
-					for(key in elements_Cad_Product){
-						elements_Cad_Product[key].disabled = true;	// verificar
-					}
-
-					for(key in elements_Cad_User){
-						elements_Cad_User[key].disabled = false;
-					}					
-
-				}else if(selected_option == "client"){
-
-					for(key in elements_Cad_User){
-							elements_Cad_User[key].disabled = true;
-						}
-
-					for(key in elements_Cad_Product){
-						elements_Cad_Product[key].disabled = true; // verificar
-					}
-					for(key in elements_Cad_Client){
-						elements_Cad_Client[key].disabled = false;
-					}					
-
-				}else{
-
-					for(key in elements_Cad_User){
-							elements_Cad_User[key].disabled = true;
-						}
-
-					for(key in elements_Cad_Client){
-						elements_Cad_Client[key].disabled = true;
-					}
-
-					for(key in elements_Cad_Product){
-						elements_Cad_Product[key].disabled = false;
-					}					
-				}
-			}
+		<!-- 
+		<script src="./js/funcoesGerais.js">
+			// import com escopo global Não é necessário 'iword export' na origem.
 		</script>
+		-->
 		
 		<style>
 			/*
@@ -120,10 +61,6 @@
 				<option class="select" value="product">Cadastro Produto</option>
 			</select>
 		</div>
-		<script >
-			const selector = window.document.getElementById("type-cad");
-			selector.addEventListener("change", setOption);
-		</script>
 
 	<!--
 		<script>
@@ -198,6 +135,10 @@
 				<input class="Cad-User" type="text" name="password" id="password" value="" required> <br>
 				<label>Type</label> <br>
 				<input class="Cad-User" type="text" name="type" id="type" value="" required> <br>
+				<label>Address</label> <br>
+				<input class="Cad-User" type="text" name="address" id="address" value="" required> <br>
+				<label>Contact</label> <br>
+				<input class="Cad-User" type="text" name="contact" id="contact" value="" required> <br>
 				<input type="hidden" name="op_type_user" id="op_type_user" value="2.1"> <br>
 
 				<br>
@@ -232,7 +173,7 @@
 				<input type="hidden" name="op_type_client" id="op_type_client" value="2.2"> <br>
 
 				<br>
-				<input class="Cad-Client" type="submit" value="Submit Form">
+				<input class="Cad-Client" type="submit" value="Submit Form" disabled>
 				<p id="frm-client" style="color: 1px solid red;"></p>	
 			</form>
 		</div>
@@ -275,9 +216,83 @@
 				<input class="Cad-Product" type="text" id="unit" name="unit" value="" required disabled> <br>
 				<input type="hidden" name="op_type_product" id="op_type_product" value="2.3">
 				<br>
-				<input class="Cad-Product" type="submit" value="submit form">
+				<input class="Cad-Product" type="submit" value="submit form" disabled>
 				<p id="frm-product" style="color: 1px solid red;"></p>
 			</form>
 		</div>
+
+		<script type="module"> // import com escopo local necessário 'iword export' na origem.
+			import {validateForm, feedbackClear} from "./js/funcoesGerais.js";
+			
+			// "window" tornando a função de local para global escopo.
+			window.validateForm = validateForm; 
+			window.feedbackClear = feedbackClear;
+
+			const elements_Cad_Client = window.document.getElementsByClassName("Cad-Client");
+			const elements_Cad_Product = window.document.getElementsByClassName("Cad-Product");
+			const elements_Cad_User = window.document.getElementsByClassName("Cad-User");
+			let selected_option = "user";
+			
+			function setOption(event){
+				//console.log("setOption foi chamada"); // Adicione esta linha
+				window.feedbackClear();
+				selected_option = event.target.value;
+				//selected_option = this.value; // 'this' refere-se ao elemento no caso o 'select' que disparou o evento
+				//console.log(selected_option);
+				disableElement();
+			}
+			window.setOption = setOption;
+
+			function disableElement(){
+				if(selected_option == "user"){
+
+					for(let i of elements_Cad_Client){
+						i.disabled = true;
+					}
+					
+					for(let i of elements_Cad_Product){
+						i.disabled = true;	// verificar
+					}
+
+					for(let i of elements_Cad_User){
+						i.disabled = false;
+					}					
+
+				}else if(selected_option == "client"){
+					
+					for(let i of elements_Cad_User){
+						i.disabled = true;
+					}
+					
+					for(let i of elements_Cad_Product){
+						i.disabled = true; // verificar
+					}
+					/*
+					for(let i of elements_Cad_Client){
+						i.disabled = true; // desabilitado para sempre obsoleto.
+					}					
+					*/
+				}else{
+
+					for(let i of elements_Cad_User){
+						i.disabled = true;
+					}
+
+					for(let i of elements_Cad_Client){
+						i.disabled = true;
+					}
+
+					for(let i of elements_Cad_Product){
+						i.disabled = false;
+					}					
+				}
+			}
+			
+			let selector = window.document.getElementById("type-cad");
+			selector.addEventListener("change", window.setOption);
+			// Navegador/addEventListener passa como primeiro parametro o evento para a função.
+
+		</script>
+
 	</body>
 </html>
