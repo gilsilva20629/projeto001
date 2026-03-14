@@ -1,16 +1,19 @@
 import mysql.connector
-import os                #usada para ppegar as variaveis de ambiente.
+import os                #usada para pegar as variaveis de ambiente.
 import hashlib
-from .entities import User, Client, Product
+from py.object import User, Client, Product
 import json
+import base64
+import urllib.parse		#usada para converter char escapados %xx em char normal.
+from py.auth import genarateSecrets
+import traceback 		#Imprimir o rastreamento do erro no except clausula.
 
 def start():
 
 	#obtendo variaveis locais
 	#HOST = os.getenv("HOST")
 	USER = os.getenv("USER")
-	print("Ambiente: ", USER)
-
+	
 	#obtendo variaveis remotas railway.com
 	MYSQLHOST = os.getenv("MYSQLHOST")
 	MYSQLPORT = os.getenv("MYSQLPORT")
@@ -21,6 +24,7 @@ def start():
 
 	try:
 		if USER != "susan":			#variaveis remotas railway.com
+			print("Ambiente: ", MYSQLHOST)
 			mydb = mysql.connector.connect(
 				host = os.getenv("MYSQLHOST"),
 				port = os.getenv("MYSQLPORT"),
@@ -30,6 +34,7 @@ def start():
 			)
 			print("Connected in DB railway...")
 		else:
+			print("Ambiente: ", USER)
 			mydb = mysql.connector.connect(
 				host = "localhost",
 				user = "root",
@@ -67,10 +72,14 @@ def start():
 def quit(mydb, mycursor):
 	mycursor.close()
 	mydb.close()
+	print("Closing DB...")
 
 def exit(mydb, mycursor):
 	mycursor.close()
 	mydb.close()
+	print("Closing DB...")
+
+''' Deprecated (usar somente para testes
 
 def command_extra(command=None):
 	if command!=None :
@@ -89,6 +98,7 @@ def command_extra(command=None):
 
 		except Exception as err:
 			print("command extra falhou!")	
+'''
 
 ''' Deprecated (usar somente para testes
 
@@ -109,25 +119,37 @@ def add_user_test(user, command_x=None):
 	exit()
 '''
 
-def login(name:  str, password: str, command_x=None)-> bool:
-	mydb, mycursor = start()
-	#command_extra(command_x)
+def auth(authorization:  str)-> dict | bool:
+	#print(authorization.split(" ")[1])
+	Bytes = bytes(authorization.split(" ")[1], 'utf-8')
+	#print(Bytes)
+	credentials = base64.b64decode(Bytes)
+	#print(credentials, type(credentials))
+	#print(urllib.parse.unquote(credentials), type( urllib.parse.unquote(credentials) ) )
+	name, password = urllib.parse.unquote(credentials).split(":") #converte caracter escapado do tipo %xx para não escapado.
+	#print(name, password)
+	#mydb, mycursor = start()
 
 	results = search_user(name)[0]
-
-	for r in results:
-		if name in r:
-
+	#print(results)
+	for row in results:
+		if name in row:
+			#print(r)
 			#gerar hash do password
 			#h = hashlib.sha256()
 			#h.update(password.encoded())
 			#h.hexdigest()
+			user_id = row[3]
 
-			if password == (r[2])[0:16] :
-				return True
+			if password == (row[1])[0:16] :
+				token = genarateSecrets()
+				add('session', user_id=user_id, token=token, expires="session", max_age=3600)
+
+				return {'token': token, 'expires': 'session', 'max_age': 3600}
 			else:
 				return False
-	exit(mydb, mycursor)
+		else:
+			return False
 
 def cadUser(name: str, password: str, tipo: str, address: str, contact: str, command_x=None)-> bool:
 	mydb, mycursor = start()
@@ -156,6 +178,7 @@ def cadUser(name: str, password: str, tipo: str, address: str, contact: str, com
 		print("query falhou!", error, type(error))
 		return False
 	exit(mydb, mycursor)
+
 
 def cadClient(name, address, contact):
 	mydb, mycursor = start()
@@ -196,6 +219,7 @@ def cadClient(name, address, contact):
 		print("query falhou!", error, type(error))
 		return False
 	exit(mydb, mycursor)
+
 
 def cadProductBatch():
 	mydb, mycursor = start()
@@ -240,6 +264,7 @@ def cadProductBatch():
 
 	exit(mydb, mycursor)
 
+
 def cadProduct(product_name: str, category: str, unit: str)-> bool:
 	mydb, mycursor = start()
 	try:
@@ -266,21 +291,19 @@ def cadProduct(product_name: str, category: str, unit: str)-> bool:
 
 	exit(mydb, mycursor)
 
-def search_user(name=None, user_id=None, tipo=None, command_x=None):
-	mydb, mycursor = start()
-	#command_extra(command_x)
 
+def search_user(name=None, user_id=None, tipo=None):
+	mydb, mycursor = start()
 	n = []
 	u = []
-	g = []
-
+	t = []
+	#response = []
 	if name == None and user_id == None and tipo == None :
+		exit(mydb, mycursor)
 		return "Ivalid parameters!"
-
 	else:
 		#mycursor.execute(f"SELECT * FROM user WHERE name={name}")
 		#results = mycursor.fetchall()
-
 		mycursor.execute("SELECT * FROM user")
 		results = mycursor.fetchall()
 
@@ -296,27 +319,27 @@ def search_user(name=None, user_id=None, tipo=None, command_x=None):
 		if name is not None:
 			#print(f"name: __________ __________ __________ {name}")
 			for i in results:
-				if name in i[1] :
+				if name in i[0] :
 					#print(i)
 					n.append(i)
 		
 		if user_id is not None:
 			#print(f"user_id: __________ __________ __________ {user_id}")
 			for i in results:
-				if user_id == i[4] :
+				if user_id == i[3] :
 					#print(i)
 					u.append(i)
 		
 		if tipo is not None:
 			#print(f"tipo: __________ __________ __________ {tipo}")
 			for i in results:
-				if tipo == i[3] :
+				if tipo == i[2] :
 					#print(i)
-					g.append(i)
-		
-	
-	return n, u, g
+					t.append(i)
+	#response.extend()
 	exit(mydb, mycursor)
+	return n, u, t
+
 		
 def list_users(command_x=None):
 	mydb, mycursor = start()
@@ -327,6 +350,7 @@ def list_users(command_x=None):
 	return results
 	exit(mydb, mycursor)
 
+
 def remove(u_id, command_x=None):
 	mydb, mycursor = start()
 	command_extra(command_x)
@@ -334,3 +358,35 @@ def remove(u_id, command_x=None):
 	mydb.commit()
 	print(mycursor.rowcount, "Record(s) Deleted.")
 	exit(mydb, mycursor)
+
+
+def add(table: str, **data):
+	""" Add data into the tables.
+	
+		Está função pretende substituir: cadUser, cadproduct, cadClient
+		ou qualquer outro metodo de gravacão de dados em tabelas do database.
+	"""
+	try:
+		mydb, mycursor = start()
+		sql = "INSERT INTO {0} ({1}) VALUES ({2})".format(table,
+			", ".join(str(key) for key in data.keys()) ,
+			", ".join(str('%s') for value in data.values())
+		)
+
+		values = list(data.values())
+
+		print("Preview SQL: ", sql, values)
+		mycursor.execute(sql, values)
+		mydb.commit()
+		print("Row:", mycursor.lastrowid, mycursor.rowcount, "Record Inserted.")
+		exit(mydb, mycursor)
+		return True
+	except Exception as error :
+		print("Query falhou! Verifique se a tabela, os campos e valores são compativéis.\n",
+		error, '\n', error.args, '\n', type(error), '\n', type(error).__name__, '\n', str(error), '\n', )
+		traceback.print_exc()  # Imprime o rastreamento do erro
+		exit(mydb, mycursor)
+		return False
+	exit(mydb, mycursor)
+
+

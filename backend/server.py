@@ -14,7 +14,8 @@ O padrão Cross-Origin Resource Sharing trabalha adicionando novos cabeçalhos H
 que permitem que os servidores descrevam um conjunto de origens que possuem permissão a ler uma informação usando o navegador.
 '''
 
-#<servidor WEB>#########################################
+
+#<servidor WEB railway >#########################################
 @app.route('/', methods=['GET'])
 def home_page():
     return send_from_directory('../frontend', 'index.html')
@@ -27,10 +28,10 @@ def cadastro_page():
 def shop_page():
     return send_from_directory('../frontend', 'shopping.html')
 
-#</servidor WEB>#########################################
+#</servidor WEB railway >#########################################
 
-@app.route('/login', methods=['POST'])
-def login():
+@app.route('/auth', methods=['POST'])
+def auth():
 	# ------------ Recepcao do request----------------
 	'''
 	application/x-www-form-urlencoded
@@ -39,24 +40,28 @@ def login():
 	text/html; charset=utf-8
 	application/json
 	'''
-
+	resposta = ""
 	if request.headers["Content-Type"] == "application/x-www-form-urlencoded" :
-		name = request.form["name_user"]
-		password = request.form["password"]
-		op_type = request.form["op_type"]
-		resposta = "OK"
+		authorization = request.headers['Authorization']
+		op_type = request.form["extra"]
+		#name = request.form["name_user"]
+		#password = request.form["password"]
+		
 	elif request.headers["Content-Type"] == "text/html; charset=utf-8" :
-		name = request.form.get("name_user")
-		password = request.form.get("password")
-		op_type = request.form.get("op_type")
-		resposta = "OK"
+		authorization = request.headers['Authorization']
+		#name = request.form.get("name_user")
+		#password = request.form.get("password")
+		op_type = request.form.get("extra")
+		
 	elif request.headers["Content-Type"] == "application/json" :
-		name = request.json.get("name_user")
-		password = request.json.get("password")
-		op_type = request.json.get("op_type")
-		resposta = "OK"
+		authorization = request.headers['Authorization']
+		#name = request.json.get("name_user")
+		#password = request.json.get("password")
+		op_type = request.json.get("extra")
+		
 	else:
 		resposta = "content/media type do not supported: "+request.headers["Content-Type"]
+		return resposta
 		#print(resposta)
 		
 	# ------------ Executar Testes --------------------
@@ -64,7 +69,7 @@ def login():
 	#print(request.json)
 	#teste.outhers()
 	
-	''' 
+	''' exemplos de elementos do request
 	print(request.method)
 	print(request.status_code) 
 	print(request.url)
@@ -78,37 +83,29 @@ def login():
 	print(request.text)
 	print(request.auth)
 	print(request.cookies)
-	print(request.timeuot)
+	print(request.timeout)
 	print(request.params)
 	print(request.body)
 	'''
 
 	# ------------ Executar operacoes --------------------
-	'''
-	if op_type == "1" :	#login
-		r = CDB.login()
-		if r :
-			resposta = "OK"
-		else:
-			resposta = "NOK"
-	elif op_type == "2" :
-		pass
-	else:
-		pass
-	'''
+	match op_type:
+		case "1": #login
+			resp = CDB.auth(authorization)
+			resposta = {'status': 'authorized', 'status_code': '200'}
+			if resp :
+				for pair in resp.items():
+					resposta.update({pair})
+				resposta = json.dumps(resposta)
+				print(resposta, type(resposta))
+			else:
+				resposta = json.dumps({'status': 'Unauthorized', 'status_code': '401' })
+		case "2":
+			pass
 
-	if resposta == "OK":
-		match op_type:
-			case "1": #login
-				r = CDB.login(name, password)
-				if r :
-					resposta = "OK"
-			case "2":
-				pass
-
-			case "_":
-					resposta = "NOK"
-
+		case "_":
+			resposta = False
+			
 	# ------------ Resposta --------------------------
 	return resposta
 
