@@ -24,7 +24,7 @@ def home_page():
 def cadastro_page():
     return send_from_directory('../frontend', 'cadastro.html')
 
-@app.route('/shopping.html', methods=['GET'])
+@app.route('/shop.html', methods=['GET'])
 def shop_page():
     return send_from_directory('../frontend', 'shopping.html')
 
@@ -234,7 +234,7 @@ def cadastros():
 
 @app.route("/products", methods=["GET"])
 def products():
-	with open(file="./cache/products.txt", mode="r", encoding="utf-8") as file: 
+	with open(file="./cache/db_products.txt", mode="r", encoding="utf-8") as file: 
 	# com 'with' abre e fecha o arquivo automaticamente(forma segura).
 	
 		#return json.dumps(file.read())

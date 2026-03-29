@@ -7,6 +7,7 @@ import base64
 import urllib.parse		#usada para converter char escapados %xx em char normal.
 from py.auth import genarateSecrets
 import traceback 		#Imprimir o rastreamento do erro no except clausula.
+import time
 
 def start():
 
@@ -179,7 +180,6 @@ def cadUser(name: str, password: str, tipo: str, address: str, contact: str, com
 		return False
 	exit(mydb, mycursor)
 
-
 def cadClient(name, address, contact):
 	mydb, mycursor = start()
 	'''
@@ -220,7 +220,6 @@ def cadClient(name, address, contact):
 		return False
 	exit(mydb, mycursor)
 
-
 def cadProductBatch():
 	mydb, mycursor = start()
 
@@ -234,17 +233,19 @@ def cadProductBatch():
 	unit = "und"
 	stock = ""
 	price = ""
+	sku = ""
 	itemsList = data['products']
 	for i in itemsList:
 		name = i['title']
 		category = i['category']
 		stock = i['stock']
 		price = i['price']
+		sku = i['sku']
 	
 		try:
 			produto = Product(name, category, unit)
-			sql = "INSERT INTO product(name, category, unit, stock, price) VALUES(%s, %s, %s, %s, %s)"
-			values = (produto.name, produto.category, produto.unit, stock, price)
+			sql = "INSERT INTO product(name, category, unit, stock, price, sku) VALUES(%s, %s, %s, %s, %s, %s)"
+			values = (produto.name, produto.category, produto.unit, stock, price, sku)
 			mycursor.execute(sql, values)
 			mydb.commit()
 			print("Reg. n°: ", mycursor.lastrowid, mycursor.rowcount,  "Record Inserted.")
@@ -259,11 +260,53 @@ def cadProductBatch():
 			#return True
 
 		except Exception as error:
-			print("Falha ao cadastrar produto!", error, type(error))
+			print("Falha ao cadastrar produto!", error, type(error), traceback.print_exc())
 			#return False
 
 	exit(mydb, mycursor)
 
+def cadImgBatch():
+	mydb, mycursor = start()
+
+	data = ""
+	with open(file="./cache/products.txt", mode="r", encoding="utf-8") as file: 
+	# com 'with' abre e fecha o arquivo automaticamente(forma segura).
+		data = json.loads(file.read())
+
+	name = ""
+	url = ""
+	itemsList = data['products']
+	for i in itemsList:
+		name = i['title']
+		url = i['images'][0]
+		#print(name)
+	
+		try:
+			mycursor.execute('SELECT * FROM product WHERE name="{0}"'.format(name))
+			product_id = mycursor.fetchall()[0][0]
+			
+			sql = "INSERT INTO product_img(product_id, url) VALUES(%s, %s)"
+			values = (product_id, url)
+			mycursor.execute(sql, values)
+			mydb.commit()
+			print("Reg. n°: ", mycursor.lastrowid, mycursor.rowcount,  "Record Inserted.")
+			
+        
+            #print("fetch: ", mycursor.fetchall(), len(mycursor.fetchall()), type(mycursor.fetchall()))
+            # fetchone(), fectchmany(size), fetchall()
+
+            #Método			Descrição
+            #fetchone()		Retorna a próxima linha do resultado da consulta como uma tupla começando da primeira. Se não houver mais linhas, retorna None.
+            #fetchmany(size)	Retorna o número especificado de linhas (definido por size) do resultado da consulta como uma lista de tuplas. Se não houver mais linhas, retorna o que estiver disponível.
+            #fetchall()		Retorna todas as linhas do resultado da consulta como uma lista de tuplas. Este é o método que você mencionou.
+
+            #return True
+
+		except Exception as error:
+			print("Falha ao cadastrar produto!", error, type(error), traceback.print_exc())
+			#return False
+
+	exit(mydb, mycursor)
 
 def cadProduct(product_name: str, category: str, unit: str)-> bool:
 	mydb, mycursor = start()
@@ -389,4 +432,62 @@ def add(table: str, **data):
 		return False
 	exit(mydb, mycursor)
 
+def productsToCache():
+	mydb, mycursor = start()
+	sql = "SELECT * FROM product JOIN product_img ON product.product_id=product_img.product_id ORDER BY product.product_id"
+	mycursor.execute(sql)
+	result = mycursor.fetchall()
+	#print(result)
+
+	products = []
+	for t in result:
+		template = {
+			'id': '',
+			'name': '',
+			'category': '',
+			'umb': '',
+			'stock': '',
+			'price': '',
+			'sku': '',
+			'image': ''
+		}
+
+		for i in t:
+			index = t.index(i)
+			match index :
+				case 0:
+					template['id']=i
+					#template.update({'id': i})
+				case 1:
+					template['name']=i
+				case 2:
+					template['category']=i
+				case 3:
+					template['umb']=i
+				case 4:
+					template['stock']=i
+				case 5:
+					template['price']=i
+				case 6:
+					template['sku']=i
+				case 7:
+					#print("No match!")
+					continue
+				case 8:
+					#print("No match!")
+					continue
+				case 9:
+					template['image']=i
+				case _:
+					print("No there are any match!")
+					break
+
+		products.append(template)
+		print(template)
+
+	#data = time.time()
+	directory = "/home/susan/programacao/projeto001/backend/cache/"
+	with open(directory+"bd_products.txt", "w") as file:
+		file.write( json.dumps(products, indent=4, separators=(',',':'), sort_keys=False) ) #sort_keys parameter to specify if the result should be sorted or not
+	
 
