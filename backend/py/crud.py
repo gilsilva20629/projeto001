@@ -334,6 +334,16 @@ def cadProduct(product_name: str, category: str, unit: str)-> bool:
 
 	exit(mydb, mycursor)
 
+def find(things: str, table: str, columnReference: str, columnRetrun: str )-> str:
+	''' Encontrar uma coisa especifica e retorna outra relacionada '''
+
+	mydb, mycursor = start()
+	
+	sql = "SELECT {} FROM {} WHERE {}='{}'".format(columnRetrun, table, columnReference, things)
+	mycursor.execute(sql)
+	result = mycursor.fetchall()
+	exit(mydb, mycursor)
+	return result
 
 def search_user(name=None, user_id=None, tipo=None):
 	mydb, mycursor = start()
@@ -383,6 +393,15 @@ def search_user(name=None, user_id=None, tipo=None):
 	exit(mydb, mycursor)
 	return n, u, t
 
+def expecific_search(table:str, column:str, retunName="", where="", order_by="")-> str:
+	''' Encontrar uma coisa especifica '''
+
+	mydb, mycursor = start()
+	sql = "SELECT {} {} FROM {} {} {}".format(column, retunName, table, where, order_by)
+	mycursor.execute(sql)
+	result = mycursor.fetchall()
+	exit(mydb, mycursor)
+	return result
 		
 def list_users(command_x=None):
 	mydb, mycursor = start()
@@ -427,10 +446,11 @@ def add(table: str, **data):
 	except Exception as error :
 		print("Query falhou! Verifique se a tabela, os campos e valores são compativéis.\n",
 		error, '\n', error.args, '\n', type(error), '\n', type(error).__name__, '\n', str(error), '\n', )
-		traceback.print_exc()  # Imprime o rastreamento do erro
+		traceback.print_exc()  # Imprime o rastreamento do erro.
 		exit(mydb, mycursor)
 		return False
 	exit(mydb, mycursor)
+
 
 def productsToCache():
 	mydb, mycursor = start()

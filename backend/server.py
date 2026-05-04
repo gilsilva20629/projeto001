@@ -97,7 +97,7 @@ def auth():
 				for pair in resp.items():
 					resposta.update({pair})
 				resposta = json.dumps(resposta)
-				print(resposta, type(resposta))
+				#print(resposta, type(resposta))
 			else:
 				resposta = json.dumps({'status': 'Unauthorized', 'status_code': '401' })
 		case "2":
@@ -180,7 +180,7 @@ def cadastros():
 	print(request.text)	X  Invalido!
 	print(request.auth)
 	print(request.cookies)
-	print(request.timeuot)
+	print(request.timeout)
 	print(request.params)
 	print(request.body)
 	'''
@@ -234,7 +234,7 @@ def cadastros():
 
 @app.route("/products", methods=["GET"])
 def products():
-	with open(file="./cache/db_products.txt", mode="r", encoding="utf-8") as file: 
+	with open(file="./cache/bd_products.txt", mode="r", encoding="utf-8") as file: 
 	# com 'with' abre e fecha o arquivo automaticamente(forma segura).
 	
 		#return json.dumps(file.read())
@@ -247,10 +247,39 @@ def products():
 	return response
 	'''
 
-#def auth():
+@app.route("/order", methods=["POST"])
+def order():
+	#print(request.headers["Content-Type"])
+	#print( request.json.get("items") )
+	print(request.json)
+	order = request.json
 
-#def token():
+	user_id = CDB.find(order['secret'], 'session', 'token', 'user_id') 	#return a list.
+	user_id = user_id[0]												#return a tuple.
+	user_id = user_id[0]												#return a int.
+
+	data = {
+		"user_id": str(user_id),
+		"total": order['total']
+	}	
+	#print(data)
+	CDB.add("pedido", **data)
+
+	order_id = CDB.expecific_search('pedido', 'MAX(order_id)')			#return a list.
+	order_id = order_id[0]												#return a tuple.
+	order_id = order_id[0]												#return a int.
+
+	data.clear()
+	data.update({'order_id': order_id})
+
+	for key, value in order['items'].items() :
+		data.update( { 'product_id': key} )
+		data.update( {'quantity': value} )
+		CDB.add('items', **data)
+				
+	return "Order ID:" + str(order_id)
 	
+
 
 if __name__ == '__main__':
 	if os.getenv('HOME') == "/home/susan":
